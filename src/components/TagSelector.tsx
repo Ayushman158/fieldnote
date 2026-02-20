@@ -9,7 +9,7 @@ interface Props {
 }
 
 export default function TagSelector({ selectedTags, onToggleTag }: Props) {
-    const { tags, addCustomTag } = useInterviews();
+    const { tags, addCustomTag, interviews, activeProjectId } = useInterviews();
     const [isOpen, setIsOpen] = useState(false);
     const [search, setSearch] = useState('');
     const wrapperRef = useRef<HTMLDivElement>(null);
@@ -28,6 +28,23 @@ export default function TagSelector({ selectedTags, onToggleTag }: Props) {
     const filteredTags = tags.filter(t => t.name.toLowerCase().includes(search.toLowerCase()));
 
     const selectedTagDefs = selectedTags.map(id => tags.find(t => t.id === id)).filter(Boolean) as Tag[];
+
+    const projectInterviews = interviews.filter(i => i.projectId === activeProjectId);
+
+    const projectTagCounts: Record<string, number> = {};
+    projectInterviews.forEach(inv => {
+        inv.sections.forEach(sec => sec.questions.forEach(q => {
+            q.tags.forEach(tid => {
+                projectTagCounts[tid] = (projectTagCounts[tid] || 0) + 1;
+            });
+        }));
+    });
+
+    const suggestedTags = Object.entries(projectTagCounts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5)
+        .map(([tid]) => tags.find(t => t.id === tid))
+        .filter(t => t !== undefined) as Tag[];
 
     const handleCreateNew = () => {
         if (search.trim()) {
@@ -102,6 +119,33 @@ export default function TagSelector({ selectedTags, onToggleTag }: Props) {
                         >
                             <span className="bg-indigo-100 text-indigo-700 p-1 rounded"><Hash size={16} /></span>
                             <span>Create new tag <strong>"{search}"</strong></span>
+                        </div>
+                    )}
+
+                    {!search && suggestedTags.length > 0 && (
+                        <div className="p-3 border-b border-gray-100 bg-gray-50/50">
+                            <h4 className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest ml-1 mb-2">Most used in this project</h4>
+                            <div className="flex flex-wrap gap-1 px-1">
+                                {suggestedTags.map(tag => {
+                                    const isSelected = selectedTags.includes(tag.id);
+                                    return (
+                                        <button
+                                            key={`sug-${tag.id}`}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                onToggleTag(tag.id);
+                                                setSearch('');
+                                            }}
+                                            className={`text-xs px-2.5 py-1.5 rounded-md border text-left transition ${isSelected
+                                                ? tagColor(tag.category)
+                                                : 'bg-white border-gray-200 text-gray-700 hover:bg-indigo-50 hover:border-indigo-200'
+                                                }`}
+                                        >
+                                            {tag.name}
+                                        </button>
+                                    );
+                                })}
+                            </div>
                         </div>
                     )}
 

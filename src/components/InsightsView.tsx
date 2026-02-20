@@ -1,5 +1,5 @@
 import { useInterviews } from '../context/InterviewsContext';
-import { BarChart3, Users, HeartPulse, Target, AlertCircle, Lightbulb } from 'lucide-react';
+import { BarChart3, Users, HeartPulse, Target, AlertCircle, Lightbulb, GitMerge } from 'lucide-react';
 
 export default function InsightsView() {
     const { interviews, tags, templateCategories, activeProjectId } = useInterviews();
@@ -104,10 +104,11 @@ export default function InsightsView() {
             };
         });
 
-    // Segment Detection Logic (Rule-based generic)
+    // Segment Detection Logic (Rule-based generic) + Tag Co-occurrence
     let efficiencySeekers = 0;
     let highFrictionUsers = 0;
     let workaroundExperts = 0;
+    const tagPairs: Record<string, number> = {};
 
     projectInterviews.forEach(inv => {
         const invTagIds = new Set<string>();
@@ -124,6 +125,14 @@ export default function InsightsView() {
             });
         });
 
+        const arr = Array.from(invTagIds).sort();
+        for (let i = 0; i < arr.length; i++) {
+            for (let j = i + 1; j < arr.length; j++) {
+                const pairKey = `${arr[i]}::${arr[j]}`;
+                tagPairs[pairKey] = (tagPairs[pairKey] || 0) + 1;
+            }
+        }
+
         const avg = invStCnt ? invStressSum / invStCnt : 3;
 
         // Generic Rules
@@ -132,9 +141,22 @@ export default function InsightsView() {
         if (invTagIds.has('b_workaround') && invTagIds.has('m_control')) workaroundExperts++;
     });
 
+    const recurringPairs = Object.entries(tagPairs)
+        .filter(([_, count]) => count >= 2)
+        .map(([pair, count]) => {
+            const [id1, id2] = pair.split('::');
+            return { id1, id2, count };
+        })
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 5);
+
 
     return (
-        <div className="space-y-8 animate-in fade-in duration-300">
+        <div className="space-y-8 animate-in fade-in duration-300 pb-20">
+            <div className="flex flex-col sm:flex-row justify-between sm:items-end gap-2">
+                <h2 className="text-2xl font-semibold tracking-tight">Insights Overview</h2>
+                <p className="text-sm text-gray-500 font-medium">Insights are based on tagged patterns across interviews.</p>
+            </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <StatCard title="Total Interviews" value={totalInterviews} icon={<Users size={18} className="text-indigo-500" />} />
@@ -180,6 +202,33 @@ export default function InsightsView() {
                             </div>
                         )}
                     </div>
+
+                    <div className="mt-8 pt-6 border-t border-gray-100">
+                        <h4 className="font-semibold text-gray-800 mb-4 flex items-center gap-2 tracking-tight">
+                            <GitMerge size={18} className="text-indigo-500" />
+                            Recurring Tag Combinations
+                        </h4>
+                        {recurringPairs.length > 0 ? (
+                            <ul className="space-y-3">
+                                {recurringPairs.map(({ id1, id2, count }) => {
+                                    const n1 = tags.find(t => t.id === id1)?.name || id1;
+                                    const n2 = tags.find(t => t.id === id2)?.name || id2;
+                                    return (
+                                        <li key={`${id1}-${id2}`} className="flex justify-between items-center text-sm font-medium border-b border-gray-50 pb-2 last:border-0 last:pb-0">
+                                            <div className="flex items-center gap-2">
+                                                <span className="bg-indigo-50 text-indigo-700 px-2 py-1 rounded border border-indigo-100/50">{n1}</span>
+                                                <span className="text-gray-400">+</span>
+                                                <span className="bg-indigo-50 text-indigo-700 px-2 py-1 rounded border border-indigo-100/50">{n2}</span>
+                                            </div>
+                                            <span className="text-gray-500">{count} {count === 1 ? 'interview' : 'interviews'}</span>
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                        ) : (
+                            <p className="text-sm text-gray-400 italic">No recurring tag combinations found across 2+ interviews yet.</p>
+                        )}
+                    </div>
                 </div>
 
                 <div className="bg-white p-6 rounded-md border border-gray-200">
@@ -191,9 +240,9 @@ export default function InsightsView() {
                                 <div className="flex items-center justify-end gap-4 w-2/3">
                                     <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden shrink-0 max-w-40">
                                         <div
-                                            className={`h-full rounded-full transition-all duration-1000 ease-out ${parseFloat(stage.avg) > 3.5 ? 'bg-red-400'
-                                                : parseFloat(stage.avg) > 2.5 ? 'bg-amber-400'
-                                                    : 'bg-emerald-400'
+                                            className={`h-full rounded-full transition-all duration-1000 ease-out ${parseFloat(stage.avg) > 3.5 ? 'bg-indigo-500'
+                                                : parseFloat(stage.avg) > 2.5 ? 'bg-indigo-300'
+                                                    : 'bg-gray-300'
                                                 }`}
                                             style={{ width: `${(parseFloat(stage.avg) / 5) * 100}%` }}
                                         />

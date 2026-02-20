@@ -128,6 +128,15 @@ function AppContent() {
           activeTab === 'notebook' ? <NotebookView /> : <InsightsView />
         )}
       </main>
+
+      <footer className="w-full text-center py-8 px-4 mt-auto border-t border-gray-100">
+        <div className="max-w-4xl mx-auto flex justify-center items-center">
+          <p className="text-xs text-gray-500 flex items-center gap-1.5 tracking-tight font-medium transition px-3 py-1.5">
+            <ShieldCheck size={14} className="text-emerald-500" />
+            Interview data stays in your browser. No content is stored on external servers.
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }
