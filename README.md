@@ -1,73 +1,71 @@
-# React + TypeScript + Vite
+<div align="center">
+  <img src="./public/vite.svg" alt="FieldNote Logo" width="100"/>
+  <h1>FieldNote</h1>
+  <p><strong>A disciplined, offline-first qualitative research repository for product teams.</strong></p>
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+  [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+  [![React](https://img.shields.io/badge/React-18.x-blue)](https://react.dev/)
+  [![TailwindCSS](https://img.shields.io/badge/Tailwind-3.x-38B2AC)](https://tailwindcss.com/)
+</div>
 
-Currently, two official plugins are available:
+<br />
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 📖 The Story Behind FieldNote
 
-## React Compiler
+As a product researcher conducting continuous user interviews, I constantly found myself drowning in scattered Google Docs, disjointed Notion pages, and messy spreadsheets. **I needed a way to capture qualitative insights that felt as structured as quantitative data.**
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+The problem with most "research repositories" is that they are bloated, require cloud subscriptions, or feel like overwhelming databases. I wanted a tool that felt like a **disciplined researcher's notebook**—calm, structured, and fast.
 
-## Expanding the ESLint configuration
+I built **FieldNote** to solve this. It's an offline-first, privacy-focused application that allows researchers to define standard question structures, tag friction points in real-time, and automatically generate pattern insights across all participants in a project.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## ✨ Core Features
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+*   **🗂️ Project-Based Scoping:** Organize your research into dedicated projects. Every interview belongs to a clear contextual scope.
+*   **🏗️ Custom Interview Structures:** Don't start from scratch every time. Define a standard flow (e.g., Context → Decisions → Friction → Impact) and apply it to all interviews.
+*   **🏷️ Generic Tagging Engine:** Uncover patterns fast. Tag notes with categories like `Behaviour`, `Motivation`, `Friction`, and `Impact`.
+*   **📊 Instant Insights Dashboard:** FieldNote automatically aggregates your tags and stress scores to show you exactly where users are struggling across a project.
+*   **🔒 Privacy-First & Offline:** Entirely built on local storage. No databases, no subscriptions, no cloud leaks. Your data stays on your machine until you export it.
+*   **📤 Exportable Summaries:** Generate instant qualitative summaries for stakeholders in JSON or clean Text format.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## 🚀 Getting Started
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+To run FieldNote locally on your machine:
+
+```bash
+# Clone the repository
+git clone https://github.com/Ayushman158/fieldnote.git
+
+# Navigate to the project directory
+cd fieldnote
+
+# Install dependencies
+npm install
+
+# Start the development server
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🛠️ Tech Stack
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+*   **Frontend:** React (Vite)
+*   **Styling:** Tailwind CSS
+*   **Icons:** Lucide React
+*   **State Management:** React Context API + Local Storage
+*   **Analytics:** Google Analytics 4 (GA4)
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 🤝 Contributing
+
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📜 License
+
+Distributed under the MIT License. See `LICENSE` for more information.
+
+---
+*Built with intention for product researchers.*
