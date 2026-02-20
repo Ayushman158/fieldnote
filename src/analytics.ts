@@ -1,4 +1,4 @@
-export const GA_MEASUREMENT_ID = ''; // Configure GA4 ID here
+export const GA_MEASUREMENT_ID = 'G-QYD5J8J5BW'; // Configure GA4 ID here
 
 export const isAnalyticsEnabled = () => {
     return localStorage.getItem('analytics_enabled') !== 'false';
