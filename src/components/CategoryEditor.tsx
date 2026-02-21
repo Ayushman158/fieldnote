@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useInterviews } from '../context/InterviewsContext';
 import type { TemplateCategory } from '../types';
-import { ChevronDown, ChevronRight, Activity, Plus } from 'lucide-react';
+import { ChevronDown, ChevronRight, Activity, Plus, Sparkles, Pencil } from 'lucide-react';
 import QuestionBlock from './QuestionBlock';
+import InterviewRecordingView from './InterviewRecordingView';
 
 interface Props {
     categoryTemplate: TemplateCategory;
@@ -11,6 +12,7 @@ interface Props {
 export default function CategoryEditor({ categoryTemplate }: Props) {
     const { activeInterview, addQuestion, deleteQuestion, duplicateQuestion } = useInterviews();
     const [isExpanded, setIsExpanded] = useState(true);
+    const [isAiMode, setIsAiMode] = useState(false);
 
     if (!activeInterview) return null;
 
@@ -65,10 +67,37 @@ export default function CategoryEditor({ categoryTemplate }: Props) {
                 )}
             </div>
 
+            {/* AI Mode Toggle Header when Expanded */}
             {isExpanded && (
-                <div className="p-2 md:p-6 space-y-6 bg-gray-50/30 rounded-b-md border-t border-indigo-50">
+                <div className="bg-gray-50 border-t border-b border-gray-100 px-6 py-2 flex justify-end gap-2">
+                    <button
+                        onClick={() => setIsAiMode(false)}
+                        className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-md transition ${!isAiMode ? 'bg-white shadow border border-gray-200 text-gray-800' : 'text-gray-500 hover:bg-gray-200'}`}
+                    >
+                        <Pencil size={14} /> Manual Type
+                    </button>
+                    <button
+                        onClick={() => setIsAiMode(true)}
+                        className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-md transition ${isAiMode ? 'bg-indigo-600 shadow border border-indigo-700 text-white' : 'text-gray-500 hover:bg-indigo-50 hover:text-indigo-600'}`}
+                    >
+                        <Sparkles size={14} /> AI Listen
+                    </button>
+                </div>
+            )}
 
-                    {questions.length === 0 ? (
+            {isExpanded && (
+                <div className="p-2 md:p-6 space-y-6 bg-gray-50/30 rounded-b-md">
+
+                    {isAiMode && (
+                        <div className="mb-6">
+                            <InterviewRecordingView
+                                categoryId={categoryTemplate.id}
+                                onNotesGenerated={() => setIsAiMode(false)}
+                            />
+                        </div>
+                    )}
+
+                    {!isAiMode && questions.length === 0 ? (
                         <div className="text-center py-8">
                             <p className="text-gray-400 text-sm mb-4">No questions added yet to this category.</p>
                             <button
@@ -94,15 +123,17 @@ export default function CategoryEditor({ categoryTemplate }: Props) {
                                 />
                             ))}
 
-                            <div className="pt-2 pl-2">
-                                <button
-                                    onClick={() => addQuestion(activeInterview.id, categoryTemplate.id)}
-                                    className="flex items-center gap-2 text-sm font-medium text-indigo-600 hover:text-indigo-800 transition"
-                                >
-                                    <div className="bg-indigo-100 p-1 rounded"><Plus size={14} /></div>
-                                    Add another question
-                                </button>
-                            </div>
+                            {!isAiMode && (
+                                <div className="pt-2 pl-2">
+                                    <button
+                                        onClick={() => addQuestion(activeInterview.id, categoryTemplate.id)}
+                                        className="flex items-center gap-2 text-sm font-medium text-indigo-600 hover:text-indigo-800 transition"
+                                    >
+                                        <div className="bg-indigo-100 p-1 rounded"><Plus size={14} /></div>
+                                        Add another question
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     )}
 
