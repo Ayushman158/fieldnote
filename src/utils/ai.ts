@@ -3,12 +3,13 @@ export interface GeneratedNote {
     note: string;
 }
 
-const GEMINI_API_KEY = "AIzaSyDMWCcZyUimFWdaxilzwDJ6Cue-dj2FGZg";
+const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 
 export async function generateNotesFromTranscript(
     transcript: string,
     questions: { id: string, prompt: string }[]
 ): Promise<GeneratedNote[]> {
+    if (!GEMINI_API_KEY) throw new Error("VITE_GEMINI_API_KEY is not set in your .env file.");
     if (!transcript.trim()) return [];
 
     const systemPrompt = `You are an expert qualitative UX researcher. 
