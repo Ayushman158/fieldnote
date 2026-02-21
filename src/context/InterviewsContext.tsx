@@ -31,10 +31,6 @@ interface InterviewsContextType {
     deleteInterview: (id: string) => void;
     addCustomTag: (name: string, category: Tag['category']) => Tag;
 
-    // AI Features
-    geminiApiKey: string | null;
-    setGeminiApiKey: (key: string | null) => void;
-
     // Question level updates
     addQuestion: (interviewId: string, categoryId: string) => void;
     updateQuestion: (interviewId: string, categoryId: string, questionId: string, updates: Partial<Question>) => void;
@@ -75,10 +71,6 @@ export function InterviewsProvider({ children }: { children: ReactNode }) {
         return saved ? JSON.parse(saved) : [];
     });
 
-    const [geminiApiKey, setGeminiApiKey] = useState<string | null>(() => {
-        return localStorage.getItem('fieldnote_gemini_key') || null;
-    });
-
     const [activeProjectId, setActiveProjectId] = useState<string | null>(null);
     const [activeInterviewId, setActiveInterviewId] = useState<string | null>(null);
 
@@ -87,10 +79,6 @@ export function InterviewsProvider({ children }: { children: ReactNode }) {
     useEffect(() => { localStorage.setItem(PROJECTS_KEY, JSON.stringify(projects)); }, [projects]);
     useEffect(() => { localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(interviews)); }, [interviews]);
     useEffect(() => { localStorage.setItem(TAGS_STORAGE_KEY, JSON.stringify(customTags)); }, [customTags]);
-    useEffect(() => {
-        if (geminiApiKey) localStorage.setItem('fieldnote_gemini_key', geminiApiKey);
-        else localStorage.removeItem('fieldnote_gemini_key');
-    }, [geminiApiKey]);
 
     const tags = [...PREDEFINED_TAGS, ...customTags];
 
@@ -284,8 +272,7 @@ export function InterviewsProvider({ children }: { children: ReactNode }) {
             interviews, activeInterviewId, activeInterview, tags,
             setActiveInterviewId, createNewInterview, updateInterviewMetadata,
             deleteInterview, addCustomTag,
-            addQuestion, updateQuestion, deleteQuestion, duplicateQuestion,
-            geminiApiKey, setGeminiApiKey
+            addQuestion, updateQuestion, deleteQuestion, duplicateQuestion
         }}>
             {children}
         </InterviewsContext.Provider>

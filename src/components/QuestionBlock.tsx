@@ -72,7 +72,7 @@ export default function QuestionBlock({
     };
 
     return (
-        <div className="p-5 border-l-2 border-transparent focus-within:border-indigo-500 hover:border-gray-200 transition bg-white/50 hover:bg-white rounded-md group relative space-y-4">
+        <div className="p-5 border-l-2 border-transparent focus-within:border-indigo-500 hover:border-gray-200 transition bg-white/50 hover:bg-white rounded-md group relative space-y-4 hover:shadow-[0_0_20px_rgba(79,70,229,0.04)] duration-300">
 
             {/* Question actions top right */}
             <div className="absolute top-4 right-4 flex gap-1 opacity-0 group-hover:opacity-100 transition">

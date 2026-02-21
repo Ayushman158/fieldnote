@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Mic, Square, Sparkles, Loader2, AlertCircle, Settings } from 'lucide-react';
+import { Mic, Square, Sparkles, Loader2, AlertCircle } from 'lucide-react';
 import { useInterviews } from '../context/InterviewsContext';
 import { TranscriptionService } from '../utils/speech';
 import { generateNotesFromTranscript } from '../utils/ai';
@@ -13,8 +13,6 @@ interface Props {
 export default function InterviewRecordingView({ categoryId, onNotesGenerated }: Props) {
     const {
         activeInterview,
-        geminiApiKey,
-        setGeminiApiKey,
         updateQuestion,
         tags
     } = useInterviews();
@@ -24,8 +22,6 @@ export default function InterviewRecordingView({ categoryId, onNotesGenerated }:
     const [isGenerating, setIsGenerating] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [transcriber, setTranscriber] = useState<TranscriptionService | null>(null);
-    const [showKeyInput, setShowKeyInput] = useState(!geminiApiKey);
-    const [tempKey, setTempKey] = useState(geminiApiKey || '');
 
     const transcriptRef = useRef<HTMLDivElement>(null);
 
@@ -65,10 +61,6 @@ export default function InterviewRecordingView({ categoryId, onNotesGenerated }:
     };
 
     const handleGenerateNotes = async () => {
-        if (!geminiApiKey) {
-            setShowKeyInput(true);
-            return;
-        }
         if (!transcript.trim()) {
             setError("No transcript recorded yet.");
             return;
@@ -86,7 +78,6 @@ export default function InterviewRecordingView({ categoryId, onNotesGenerated }:
             }));
 
             const generatedNotes = await generateNotesFromTranscript(
-                geminiApiKey,
                 transcript,
                 prompts
             );
@@ -113,64 +104,8 @@ export default function InterviewRecordingView({ categoryId, onNotesGenerated }:
         }
     };
 
-    const saveApiKey = () => {
-        if (tempKey.trim().length > 10) {
-            setGeminiApiKey(tempKey.trim());
-            setShowKeyInput(false);
-            setError(null);
-        } else {
-            setError("Invalid API Key format.");
-        }
-    };
-
-    if (showKeyInput) {
-        return (
-            <div className="bg-white border border-indigo-100 p-6 rounded-md">
-                <div className="flex items-center gap-3 mb-4 text-indigo-700">
-                    <Sparkles size={20} />
-                    <h3 className="font-semibold">Enable AI Data Entry</h3>
-                </div>
-                <p className="text-sm text-gray-600 mb-4 max-w-lg">
-                    FieldNote uses the free Google Gemini API to extract structured notes from your live raw transcripts.
-                    Your key is stored securely in your browser's local storage.
-                </p>
-
-                <div className="flex gap-2">
-                    <input
-                        type="password"
-                        placeholder="Paste your Gemini AI Key (AIza...)"
-                        value={tempKey}
-                        onChange={e => setTempKey(e.target.value)}
-                        className="flex-1 px-3 py-2 border border-gray-300 rounded focus:border-indigo-500 outline-none text-sm"
-                    />
-                    <button
-                        onClick={saveApiKey}
-                        className="bg-indigo-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-indigo-700 transition"
-                    >
-                        Save Key
-                    </button>
-                    {geminiApiKey && (
-                        <button
-                            onClick={() => setShowKeyInput(false)}
-                            className="text-gray-500 px-3 hover:text-gray-700 text-sm font-medium"
-                        >
-                            Cancel
-                        </button>
-                    )}
-                </div>
-                {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
-
-                <p className="text-xs text-gray-400 mt-4">
-                    <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noreferrer" className="underline hover:text-indigo-500">
-                        Get a free Gemini API key here
-                    </a>
-                </p>
-            </div>
-        );
-    }
-
     return (
-        <div className="bg-gray-50 border border-gray-200 rounded-md overflow-hidden flex flex-col h-[400px]">
+        <div className="bg-gray-50 border border-indigo-200 rounded-md overflow-hidden flex flex-col h-[400px] shadow-[0_0_30px_rgba(79,70,229,0.08)] transition-shadow duration-500">
             {/* Header Toolbar */}
             <div className="bg-white border-b border-gray-200 px-4 py-3 flex justify-between items-center">
                 <div className="flex items-center gap-3">
@@ -199,13 +134,6 @@ export default function InterviewRecordingView({ categoryId, onNotesGenerated }:
                 </div>
 
                 <div className="flex items-center gap-3">
-                    <button
-                        onClick={() => setShowKeyInput(true)}
-                        className="text-gray-400 hover:text-indigo-600 transition"
-                        title="AI Settings"
-                    >
-                        <Settings size={16} />
-                    </button>
                     <button
                         onClick={handleGenerateNotes}
                         disabled={isGenerating || isRecording || !transcript.trim()}

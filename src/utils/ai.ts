@@ -3,12 +3,12 @@ export interface GeneratedNote {
     note: string;
 }
 
+const GEMINI_API_KEY = "AIzaSyDMWCcZyUimFWdaxilzwDJ6Cue-dj2FGZg";
+
 export async function generateNotesFromTranscript(
-    apiKey: string,
     transcript: string,
     questions: { id: string, prompt: string }[]
 ): Promise<GeneratedNote[]> {
-    if (!apiKey) throw new Error("Gemini API Key is required");
     if (!transcript.trim()) return [];
 
     const systemPrompt = `You are an expert qualitative UX researcher. 
@@ -29,7 +29,7 @@ ${transcript}
 `;
 
     try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

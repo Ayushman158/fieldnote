@@ -35,7 +35,7 @@ export default function CategoryEditor({ categoryTemplate }: Props) {
 
     return (
         <div
-            className={`bg-white border transition-all duration-300 rounded-md ${isExpanded ? 'border-indigo-100 shadow-sm' : 'border-gray-200 hover:border-gray-300'
+            className={`bg-white border transition-all duration-300 rounded-md ${isExpanded ? 'border-indigo-100 shadow-[0_0_40px_rgba(79,70,229,0.06)]' : 'border-gray-200 hover:border-gray-300'
                 }`}
         >
             <div
